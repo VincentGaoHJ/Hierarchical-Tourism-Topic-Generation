@@ -96,8 +96,8 @@ def find_seed(user_cut, geo_noun):
         count_cha = count_after - count_before
         prob = count_cha / appear
         if count_cha > 20:
-            if (count_cha / appear) > 0.7:
-                print("{} 为独立景点，可用于继续分割".format(item))
+            if (count_cha / appear) > 0.8:
+                print("{} 为独立景点，单独出现比例 {} 够，可用于继续分割".format(item, prob))
                 geo_left.append(item)
             else:
                 print("{} 不为独立景点，因为单独出现的比例 {} 不够，接下来判断其类型".format(item, prob))
@@ -127,6 +127,8 @@ def corpus_seed(data_path, fileNode, used_word):
     print("特征名词集合 {}".format(non_geo_noun))
 
     geo_noun = find_seed(user_cut, geo_noun)
+
+    print(used_word)
 
     used_word.extend(geo_noun)
     used_word.extend(non_geo_noun)

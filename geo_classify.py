@@ -88,9 +88,7 @@ def get_classify(user_cut, used_word):
         if len(geo_noun) + len(non_geo_noun) == 21:
             break
 
-
-
-    return geo_noun[-10:], non_geo_noun
+    return geo_noun, non_geo_noun
 
 
 if __name__ == '__main__':

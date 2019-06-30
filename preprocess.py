@@ -95,6 +95,10 @@ def part_of_speech(user_cut, Flag, stopwords):
                 print("本次请求失败，这一次的和下一次的一起申请")
                 continue
 
+            if not data_fenci.__contains__("items"):
+                batch_string = ""
+                continue
+
             seg_save = []
             for item in data_fenci["items"]:
                 ci = item["item"]
