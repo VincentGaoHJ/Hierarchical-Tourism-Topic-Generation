@@ -9,6 +9,7 @@ import os
 import shutil
 import datetime
 from visualize import visualize
+from corpus_seed import corpus_seed
 from corpus_split import corpus_split
 
 
@@ -41,14 +42,16 @@ def read_temp(temp_file):
 def iteration(data_path, rootNode, used_word):
     temp_file = os.path.join(data_path, ".\\temp.txt")
     if not os.path.exists(temp_file):
-        corpus_split(data_path, rootNode, used_word)
+        geo_noun, non_geo_noun, used_word, user_cut = corpus_seed(data_path, rootNode, used_word)
+        corpus_split(data_path, geo_noun, user_cut)
     else:
         file_node = read_temp(temp_file)
         f = open(temp_file, "r+")
         f.truncate()
         # print(file_node)
         for file in file_node:
-            corpus_split(data_path, file, used_word)
+            geo_noun, non_geo_noun, used_word, user_cut = corpus_seed(data_path, file, used_word)
+            corpus_split(data_path, geo_noun, user_cut)
 
 
 def main(data_path, rootNode):

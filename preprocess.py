@@ -2,7 +2,7 @@
 """
 @Date: Created on 2019/6/14
 @Author: Haojun Gao
-@Description: 
+@Description:
 """
 
 import os
@@ -83,10 +83,10 @@ def part_of_speech(user_cut, Flag, stopwords):
     i = 0
     for single in user_cut:
         if i == 10000:
-            break
+            pass
         i += 1
-        batch_string = '分割'.join(batch_string, single)
-        if len(batch_string) >= 50000:
+        batch_string = '分割'.join([batch_string, single])
+        if len(batch_string) >= 10000:
             print("[仅仅留下名词，构建地理与非地理名词词表] {}/{}".format(i, num))
 
             try:
