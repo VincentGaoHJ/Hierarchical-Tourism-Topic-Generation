@@ -80,18 +80,17 @@ def get_classify(user_cut, used_word):
             continue
         # if geo_verify(item[0]):
         if item[0] in set_geo:
-            if len(geo_noun) < 6:
+            if len(geo_noun) < 11:
                 geo_noun.append(item[0])
         else:
-            if len(non_geo_noun) < 5:
+            if len(non_geo_noun) < 10:
                 non_geo_noun.append(item[0])
-        if len(geo_noun) + len(non_geo_noun) == 11:
+        if len(geo_noun) + len(non_geo_noun) == 21:
             break
 
-    used_word.extend(geo_noun)
-    used_word.extend(non_geo_noun)
 
-    return geo_noun[-5:], non_geo_noun, used_word
+
+    return geo_noun[-10:], non_geo_noun
 
 
 if __name__ == '__main__':

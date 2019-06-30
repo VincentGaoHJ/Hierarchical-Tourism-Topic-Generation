@@ -85,7 +85,7 @@ def gen_node_label(node_id, node_content):
     keywords = '\\n'.join(node_content)
 
     if node_id == "*":
-        return '{%s|%s}' % ("北京", keywords)
+        return '{%s|%s}' % ("故宫", keywords)
 
     if len(node_content) == 0:
         return node_name

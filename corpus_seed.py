@@ -28,8 +28,7 @@ def CountWord(comment_sentence):
     return cnt
 
 
-def corpus_seed(data_path, fileNode, used_word):
-    print('\n==========================\n Running Node  ', fileNode, '\n==========================')
+def generate_sentences(data_path, fileNode):
     file_name = fileNode.split("/")[-1]
     print(file_name)
     file_path = os.path.join(data_path, file_name + ".csv")
@@ -38,20 +37,11 @@ def corpus_seed(data_path, fileNode, used_word):
         reader = csv.reader(t)
         for sentence in reader:
             user_cut.append(sentence[0])
+    return user_cut
 
-    print("景点文章：", user_cut[:3])
 
-    sort_Word = CountWord(user_cut)
-    print("景点名词：", sort_Word[:10])
-
-    geo_noun, non_geo_noun, used_word = get_classify(sort_Word, used_word)
-
-    print("地理名词集合 {}".format(geo_noun))
-    print("特征名词集合 {}".format(non_geo_noun))
-
+def write_output(data_path, geo_noun, non_geo_noun, fileNode):
     temp_file = os.path.join(data_path, "temp.txt")
-
-    # 绘制绘图所用格式输出
     with open(temp_file, 'a+', newline='') as file:
         writer = csv.writer(file)
         for sen in geo_noun:
@@ -72,5 +62,76 @@ def corpus_seed(data_path, fileNode, used_word):
             if i != 0:
                 file.write(",")
             file.write(str(non_geo_noun[i]))
+
+
+def find_seed(user_cut, geo_noun):
+    user_geo = []
+    for sentence in user_cut:
+        word_list = sentence.split('/')
+        res = list(set(geo_noun).intersection(set(word_list)))
+        if res:
+            user_geo.append(res)
+    print(user_geo)
+    geo_left = []  # 用于保存留下的用于继续分裂的景点
+    geo_conclude = []  # 用于保存当前判断的景点
+    count_before = 0  # 不包含当前景点的计数
+    count_after = 0  # 对包含当前景点的计数
+    count_cha = 0  # 计算当前景点的差值
+    for item in geo_noun:
+        # print(geo_conclude)
+        geo_conclude.append(item)
+        # print(geo_conclude)
+        i = 0
+        appear = 0
+        chongfu = []
+        for single_geo in user_geo:
+            res = list(set(geo_conclude).intersection(set(single_geo)))
+            if res:
+                i += 1
+            if len(res) >= 2 and item in res:
+                chongfu.extend(res)
+            if item in single_geo:
+                appear += 1
+        count_after = i
+        count_cha = count_after - count_before
+        prob = count_cha / appear
+        if count_cha > 20:
+            if (count_cha / appear) > 0.7:
+                print("{} 为独立景点，可用于继续分割".format(item))
+                geo_left.append(item)
+            else:
+                print("{} 不为独立景点，因为单独出现的比例 {} 不够，接下来判断其类型".format(item, prob))
+                chongfu_count = Counter(chongfu)
+                print(chongfu)
+                print(chongfu_count)
+        else:
+            print("{} 不为独立景点，因为单独出现的总数 {} 不够".format(item, count_cha))
+
+        count_before = count_after
+
+    print(geo_left)
+    return geo_left
+
+
+def corpus_seed(data_path, fileNode, used_word):
+    print('\n==========================\n Running Node  ', fileNode, '\n==========================')
+
+    user_cut = generate_sentences(data_path, fileNode)
+    print("景点文章：", user_cut[:3])
+
+    sort_Word = CountWord(user_cut)
+    print("景点名词：", sort_Word[:10])
+
+    geo_noun, non_geo_noun = get_classify(sort_Word, used_word)
+    print("地理名词集合 {}".format(geo_noun))
+    print("特征名词集合 {}".format(non_geo_noun))
+
+    geo_noun = find_seed(user_cut, geo_noun)
+
+    used_word.extend(geo_noun)
+    used_word.extend(non_geo_noun)
+
+    # 绘制绘图所用格式输出
+    write_output(data_path, geo_noun, non_geo_noun, fileNode)
 
     return geo_noun, non_geo_noun, used_word, user_cut
