@@ -118,5 +118,5 @@ def visualize(dir):
 
 
 if __name__ == '__main__':
-    dir = "2019-06-30-18-12-29【全部数据集】"
+    dir = "2019-07-01-19-46-09"
     visualize(dir)

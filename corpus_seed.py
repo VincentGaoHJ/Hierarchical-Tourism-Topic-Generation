@@ -7,6 +7,7 @@
 
 import os
 import csv
+import math
 from collections import Counter
 from geo_classify import get_classify
 
@@ -64,6 +65,50 @@ def write_output(data_path, geo_noun, non_geo_noun, fileNode):
             file.write(str(non_geo_noun[i]))
 
 
+def judge_num(geo_left, count_cha, appear, item, prob, chongfu):
+    if count_cha > 20:
+        if (count_cha / appear) > 0.8:
+            print("{} 为独立景点，单独出现比例 {} 够，可用于继续分割".format(item, prob))
+            geo_left.append(item)
+            print(geo_left)
+        else:
+            print("{} 不为独立景点，因为单独出现的比例 {} 不够，接下来判断其类型".format(item, prob))
+            chongfu_count = Counter(chongfu)
+            print(chongfu)
+            print(chongfu_count)
+    else:
+        print("{} 不为独立景点，因为单独出现的总数 {} 不够".format(item, count_cha))
+
+    return geo_left
+
+
+def judge_entropy(geo_left, user_geo, item):
+    for poi in geo_left:
+        num_poi = 0
+        num_item = 0
+        both = 0
+        for geo_comment in user_geo:
+            if item in geo_comment:
+                num_item += 1
+            if poi in geo_comment:
+                num_poi += 1
+            if item in geo_comment and poi in geo_comment:
+                both += 1
+        total = len(user_geo)
+        if both == 0:
+            continue
+        mutual_information = total * both / (num_poi * num_item)
+        mutual_information = math.log2(mutual_information)
+        print("{} 与 {} 的互信息量 {}".format(item, poi, mutual_information))
+        if mutual_information >= 0:
+            print("[结论] {} 不为独立景点，因为与 {} 互信息量大 {}".format(item, poi, mutual_information))
+            return geo_left
+
+    geo_left.append(item)
+
+    return geo_left
+
+
 def find_seed(user_cut, geo_noun):
     user_geo = []
     for sentence in user_cut:
@@ -83,6 +128,7 @@ def find_seed(user_cut, geo_noun):
         # print(geo_conclude)
         i = 0
         appear = 0
+
         chongfu = []
         for single_geo in user_geo:
             res = list(set(geo_conclude).intersection(set(single_geo)))
@@ -92,20 +138,14 @@ def find_seed(user_cut, geo_noun):
                 chongfu.extend(res)
             if item in single_geo:
                 appear += 1
+
         count_after = i
         count_cha = count_after - count_before
         prob = count_cha / appear
-        if count_cha > 20:
-            if (count_cha / appear) > 0.8:
-                print("{} 为独立景点，单独出现比例 {} 够，可用于继续分割".format(item, prob))
-                geo_left.append(item)
-            else:
-                print("{} 不为独立景点，因为单独出现的比例 {} 不够，接下来判断其类型".format(item, prob))
-                chongfu_count = Counter(chongfu)
-                print(chongfu)
-                print(chongfu_count)
-        else:
-            print("{} 不为独立景点，因为单独出现的总数 {} 不够".format(item, count_cha))
+
+        # geo_left = judge_num(geo_left, count_cha, appear, item, prob, chongfu)
+
+        geo_left = judge_entropy(geo_left, user_geo, item)
 
         count_before = count_after
 
@@ -128,7 +168,7 @@ def corpus_seed(data_path, fileNode, used_word):
 
     geo_noun = find_seed(user_cut, geo_noun)
 
-    print(used_word)
+    print("使用过的名词集合 {}".format(used_word))
 
     used_word.extend(geo_noun)
     used_word.extend(non_geo_noun)
