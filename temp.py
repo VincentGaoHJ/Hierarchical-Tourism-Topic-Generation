@@ -5,12 +5,26 @@
 @Description: 
 """
 
-set = set()
+import numpy as np
 
-set.add("a")
-set.add("b")
-set.add("c")
+data = ['a', 'b', 'c', 'a', 'a', 'b', 'd']
 
-with open('geo_noun.txt', 'w') as f:
-    for item in set:
-        f.write(item + "\n")
+
+# 计算信息熵的方法
+def calc_ent(data):
+    """
+        calculate shanno ent of x
+    """
+
+    x = np.array(data)
+    x_value_list = set([x[i] for i in range(x.shape[0])])
+    ent = 0.0
+    for x_value in x_value_list:
+        p = float(x[x == x_value].shape[0]) / x.shape[0]
+        logp = np.log2(p)
+        ent -= p * logp
+
+    print(ent)
+
+
+calc_ent(data)

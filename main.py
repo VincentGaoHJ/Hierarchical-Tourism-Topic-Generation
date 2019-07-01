@@ -55,7 +55,7 @@ def iteration(data_path, rootNode, used_word):
 
 
 def main(data_path, rootNode):
-    MAX_LEVEL = 4
+    MAX_LEVEL = 5
 
     folder = create_dir(data_path, rootNode)
     print(folder)

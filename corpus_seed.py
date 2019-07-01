@@ -8,6 +8,7 @@
 import os
 import csv
 import math
+import numpy as np
 from collections import Counter
 from geo_classify import get_classify
 
@@ -27,6 +28,23 @@ def CountWord(comment_sentence):
         cnt.append((k, v))
     cnt.sort(key=lambda x: x[1], reverse=True)
     return cnt
+
+
+# 计算信息熵的方法
+def calc_ent(data):
+    """
+        calculate shanno ent of x
+    """
+
+    x = np.array(data)
+    x_value_list = set([x[i] for i in range(x.shape[0])])
+    ent = 0.0
+    for x_value in x_value_list:
+        p = float(x[x == x_value].shape[0]) / x.shape[0]
+        logp = np.log2(p)
+        ent -= p * logp
+
+    return ent
 
 
 def generate_sentences(data_path, fileNode):
@@ -82,7 +100,29 @@ def judge_num(geo_left, count_cha, appear, item, prob, chongfu):
     return geo_left
 
 
-def judge_entropy(geo_left, user_geo, item):
+def judge_entropy(geo_left, user_geo, item, count_cha):
+    if count_cha < 10:
+        print("[结论] {} 不为独立景点，因为单独出现的总数 {} 不够".format(item, count_cha))
+        return geo_left
+
+    en_before = []
+    en_after = []
+    for geo_comment in user_geo:
+        en_before.extend(list(set(geo_left).intersection(set(geo_comment))))
+        if item in geo_comment:
+            en_after.append(item)
+    en_after.extend(en_before)
+    entropy_before = calc_ent(en_before)
+    entropy_after = calc_ent(en_after)
+    entropy_parity = entropy_after - entropy_before
+    print(entropy_parity)
+
+    # 加此判断因为最开始的时候只有一个可能的值，熵增依旧为零
+    if geo_left:
+        if entropy_parity <= 0.15:
+            print("[结论] {} 不为独立景点，因为熵增量 {} 不够".format(item, entropy_parity))
+            return geo_left
+
     for poi in geo_left:
         num_poi = 0
         num_item = 0
@@ -99,11 +139,11 @@ def judge_entropy(geo_left, user_geo, item):
             continue
         mutual_information = total * both / (num_poi * num_item)
         mutual_information = math.log2(mutual_information)
-        print("{} 与 {} 的互信息量 {}".format(item, poi, mutual_information))
+        # print("{} 与 {} 的互信息量 {}".format(item, poi, mutual_information))
         if mutual_information >= 0:
             print("[结论] {} 不为独立景点，因为与 {} 互信息量大 {}".format(item, poi, mutual_information))
             return geo_left
-
+    print("[结论] {} 为独立景点".format(item))
     geo_left.append(item)
 
     return geo_left
@@ -145,7 +185,7 @@ def find_seed(user_cut, geo_noun):
 
         # geo_left = judge_num(geo_left, count_cha, appear, item, prob, chongfu)
 
-        geo_left = judge_entropy(geo_left, user_geo, item)
+        geo_left = judge_entropy(geo_left, user_geo, item, count_cha)
 
         count_before = count_after
 
