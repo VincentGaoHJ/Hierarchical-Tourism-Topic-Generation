@@ -85,7 +85,7 @@ def gen_node_label(node_id, node_content):
     keywords = '\\n'.join(node_content)
 
     if node_id == "*":
-        return '{%s|%s}' % ("故宫", keywords)
+        return '{%s|%s}' % ("北京", keywords)
 
     if len(node_content) == 0:
         return node_name
@@ -94,7 +94,7 @@ def gen_node_label(node_id, node_content):
 
 
 def draw(nodes, edges, output_file):
-    d = Digraph(node_attr={'shape': 'record', "fontname": "PMingLiu"})
+    d = Digraph(node_attr={'shape': 'record', "fontname": "PMingLiu-CN"})
     for node_id, node_content in nodes.items():
         d.node(node_id, gen_node_label(node_id, node_content))
     for e in edges:
@@ -114,8 +114,9 @@ def visualize(dir):
     result_file = os.path.join(dir, 'result.txt')
     main(result_file, dir + "\\" + dir[-14:-6] + '-our-overall-3', min_level=0, max_level=2)
     main(result_file, dir + "\\" + dir[-14:-6] + '-our-overall-4', min_level=0, max_level=3)
+    main(result_file, dir + "\\" + dir[-14:-6] + '-our-overall-5', min_level=0, max_level=4)
 
 
 if __name__ == '__main__':
-    dir = "2019-06-30-13-50-29"
+    dir = "2019-06-30-18-12-29【全部数据集】"
     visualize(dir)
