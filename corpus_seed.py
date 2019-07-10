@@ -123,6 +123,7 @@ def judge_entropy(geo_left, user_geo, item, count_cha):
             print("[结论] {} 不为独立景点，因为熵增量 {} 不够".format(item, entropy_parity))
             return geo_left
 
+    count_hu = 0
     for poi in geo_left:
         num_poi = 0
         num_item = 0
@@ -141,12 +142,16 @@ def judge_entropy(geo_left, user_geo, item, count_cha):
         mutual_information = math.log2(mutual_information)
         # print("{} 与 {} 的互信息量 {}".format(item, poi, mutual_information))
         if mutual_information >= 0:
-            print("[结论] {} 不为独立景点，因为与 {} 互信息量大 {}".format(item, poi, mutual_information))
-            return geo_left
-    print("[结论] {} 为独立景点".format(item))
-    geo_left.append(item)
+            count_hu += 1
+            print("{} 不为独立景点，因为与 {} 的互信息量大 {}".format(item, poi, mutual_information))
 
-    return geo_left
+    if count_hu >= 1:
+        print("[结论] {} 不为独立景点，因为与之前 {} 个景点的互信息量大".format(item, count_hu))
+        return geo_left
+    else:
+        print("[结论] {} 为独立景点".format(item))
+        geo_left.append(item)
+        return geo_left
 
 
 def find_seed(user_cut, geo_noun):
