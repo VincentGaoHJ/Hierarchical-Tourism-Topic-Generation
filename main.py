@@ -71,6 +71,7 @@ def main(data_path, rootNode):
 
 
 if __name__ == '__main__':
+
     data_path = ".\\data"
     rootNode = "0"
     main(data_path, rootNode)

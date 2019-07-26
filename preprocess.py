@@ -24,13 +24,13 @@ def init():
     return data_path
 
 
-def readfile():
+def readfile(province_id):
     """
     加载 comment_all, 提取 commentary_user, comment_id
     :return:
     """
     comment_sentence = []
-    with open('.\\raw_data\\comment_all.csv', 'r', encoding='utf-8-sig') as csvfile:
+    with open('.\\raw_data\\' + province_id + '_comment_all.csv', 'r', encoding='utf-8-sig') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
             comment = line[2]
@@ -125,11 +125,14 @@ def part_of_speech(user_cut, Flag, stopwords):
 
 
 if __name__ == '__main__':
+
+    province_id = "10807"
+
     # 设置结果数据保存文件夹
     data_path = init()
 
     # 读取初始文件以及停用词词表
-    comment_sentence, stopwords = readfile()
+    comment_sentence, stopwords = readfile(province_id)
     print(comment_sentence[:1])
 
     # 按照词性进行筛选，并且构建词表
@@ -137,17 +140,19 @@ if __name__ == '__main__':
     user_last, geo, non_geo = part_of_speech(comment_sentence, Flag, stopwords)
 
     # 保存地理名词文件
-    with open('geo_noun.txt', 'w') as f:
+    geo_path = os.path.join(".\\raw_data", province_id + '_geo_noun.txt')
+    with open(geo_path, 'w') as f:
         for item in geo:
             f.write(item + "\n")
 
     # 保存特征名词（非地理名词）文件
-    with open('non_geo_noun.txt', 'w') as f:
+    nongeo_path = os.path.join(".\\raw_data", province_id + '_non_geo_noun.txt')
+    with open(nongeo_path, 'w') as f:
         for item in non_geo:
             f.write(item + "\n")
 
     # 保存删除无用信息的评论文件
-    result_path = os.path.join(data_path, "0.csv")
+    result_path = os.path.join(data_path, province_id + "_0.csv")
     with open(result_path, 'w', newline='') as t:
         writer = csv.writer(t)
         for sentence in user_last:
