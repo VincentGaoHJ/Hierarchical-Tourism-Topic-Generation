@@ -61,9 +61,9 @@ def geo_verify(noun):
     return True
 
 
-def get_set_geo():
+def get_set_geo(province_id):
     set_geo = set()
-    with open("data\\geo_noun.txt", 'r') as file_to_read:
+    with open("data\\" + province_id + "_geo_noun.txt", 'r') as file_to_read:
         item = file_to_read.readline()
         while item:
             set_geo.add(item[:-1])
@@ -71,8 +71,8 @@ def get_set_geo():
     return set_geo
 
 
-def get_classify(user_cut, used_word):
-    set_geo = get_set_geo()
+def get_classify(user_cut, used_word, province_id):
+    set_geo = get_set_geo(province_id)
     geo_noun = []
     non_geo_noun = []
     for item in user_cut:
@@ -95,7 +95,7 @@ if __name__ == '__main__':
                 ('北京市', 1875), ('世界', 1868)]
     used_word = []
 
-    geo_noun, non_geo_noun = get_classify(user_cut, used_word)
+    geo_noun, non_geo_noun = get_classify(user_cut, used_word, province_id)
 
     print("地理名词集合 {}".format(geo_noun))
     print("特征名词集合 {}".format(non_geo_noun))

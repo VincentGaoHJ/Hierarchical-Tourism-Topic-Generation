@@ -59,19 +59,19 @@ def generate_sentences(data_path, fileNode):
     return user_cut
 
 
-def write_output(data_path, geo_noun, non_geo_noun, fileNode):
+def write_output(data_path, geo_noun, non_geo_noun, fileNode, rootName):
     temp_file = os.path.join(data_path, "temp.txt")
     with open(temp_file, 'a+', newline='') as file:
         writer = csv.writer(file)
         for sen in geo_noun:
-            if fileNode == "0":
+            if fileNode == rootName:
                 writer.writerow(["*/{}".format(sen)])
             else:
                 writer.writerow(["{}/{}".format(fileNode, sen)])
 
     result_file = os.path.join(data_path, "result.txt")
     with open(result_file, 'a+', newline='') as file:
-        if fileNode == "0":
+        if fileNode == rootName:
             file.write("*/top")
         else:
             file.write("\n" + str(fileNode))
@@ -198,7 +198,7 @@ def find_seed(user_cut, geo_noun):
     return geo_left
 
 
-def corpus_seed(data_path, fileNode, used_word):
+def corpus_seed(data_path, fileNode, used_word, rootName):
     print('\n==========================\n Running Node  ', fileNode, '\n==========================')
 
     user_cut = generate_sentences(data_path, fileNode)
@@ -207,7 +207,7 @@ def corpus_seed(data_path, fileNode, used_word):
     sort_Word = CountWord(user_cut)
     print("景点名词：", sort_Word[:10])
 
-    geo_noun, non_geo_noun = get_classify(sort_Word, used_word)
+    geo_noun, non_geo_noun = get_classify(sort_Word, used_word, rootName[:-2])
     print("地理名词集合 {}".format(geo_noun))
     print("特征名词集合 {}".format(non_geo_noun))
 
@@ -219,6 +219,6 @@ def corpus_seed(data_path, fileNode, used_word):
     used_word.extend(non_geo_noun)
 
     # 绘制绘图所用格式输出
-    write_output(data_path, geo_noun, non_geo_noun, fileNode)
+    write_output(data_path, geo_noun, non_geo_noun, fileNode, rootName)
 
     return geo_noun, non_geo_noun, used_word, user_cut

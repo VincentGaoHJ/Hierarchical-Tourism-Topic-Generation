@@ -42,7 +42,7 @@ def read_temp(temp_file):
 def iteration(data_path, rootNode, used_word):
     temp_file = os.path.join(data_path, ".\\temp.txt")
     if not os.path.exists(temp_file):
-        geo_noun, non_geo_noun, used_word, user_cut = corpus_seed(data_path, rootNode, used_word)
+        geo_noun, non_geo_noun, used_word, user_cut = corpus_seed(data_path, rootNode, used_word, rootNode)
         corpus_split(data_path, geo_noun, user_cut)
     else:
         file_node = read_temp(temp_file)
@@ -50,28 +50,31 @@ def iteration(data_path, rootNode, used_word):
         f.truncate()
         # print(file_node)
         for file in file_node:
-            geo_noun, non_geo_noun, used_word, user_cut = corpus_seed(data_path, file, used_word)
+            geo_noun, non_geo_noun, used_word, user_cut = corpus_seed(data_path, file, used_word, rootNode)
             corpus_split(data_path, geo_noun, user_cut)
 
 
-def main(data_path, rootNode):
+def main(data_path, rootNode, province_name):
     MAX_LEVEL = 5
 
     folder = create_dir(data_path, rootNode)
     print(folder)
 
-    used_word = ["文章", "中国", "北京", '北京市']
-    # used_word = []
+    # used_word = ["文章", "中国", "北京", '北京市']
+    used_word = ["文章", "中国", "云南", '昆明市', province_name]
     for level in range(MAX_LEVEL):
         print('\n================================== Running level ', level, ' ==================================\n')
         iteration(folder, rootNode, used_word)
 
     print(folder)
-    visualize(folder)
+    visualize(folder, province_name)
 
 
 if __name__ == '__main__':
 
+    province_name = "昆明"
+    province_id = "10807"
+
     data_path = ".\\data"
-    rootNode = "0"
-    main(data_path, rootNode)
+    rootNode = province_id + "_0"
+    main(data_path, rootNode, province_name)
