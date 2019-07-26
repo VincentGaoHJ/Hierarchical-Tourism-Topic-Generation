@@ -101,7 +101,7 @@ def judge_num(geo_left, count_cha, appear, item, prob, chongfu):
 
 
 def judge_entropy(geo_left, user_geo, item, count_cha):
-    if count_cha < 10:
+    if count_cha < 7:
         print("[结论] {} 不为独立景点，因为单独出现的总数 {} 不够".format(item, count_cha))
         return geo_left
 
@@ -216,7 +216,7 @@ def corpus_seed(data_path, fileNode, used_word, rootName):
     print("使用过的名词集合 {}".format(used_word))
 
     used_word.extend(geo_noun)
-    used_word.extend(non_geo_noun)
+    # used_word.extend(non_geo_noun)
 
     # 绘制绘图所用格式输出
     write_output(data_path, geo_noun, non_geo_noun, fileNode, rootName)
