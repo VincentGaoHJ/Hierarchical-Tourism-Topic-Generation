@@ -126,7 +126,7 @@ def part_of_speech(user_cut, Flag, stopwords):
 
 if __name__ == '__main__':
 
-    province_id = "11239"
+    province_id = "10065"
 
     # 设置结果数据保存文件夹
     data_path = init()

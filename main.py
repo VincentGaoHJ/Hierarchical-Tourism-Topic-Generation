@@ -60,10 +60,10 @@ def main(data_path, rootNode, province_name):
     folder = create_dir(data_path, rootNode)
     print(folder)
 
-    # used_word = ["文章", "中国", "北京", '北京市']
+    used_word = ["文章", "中国", "北京", '北京市']
     # used_word = ["文章", "中国", "云南", '昆明市', province_name]
     # used_word = ["文章", "中国", "浙江省", "浙江", '杭州市', province_name]
-    used_word = ["文章", "中国", "贵州省", "贵州", '贵阳市', province_name]
+    # used_word = ["文章", "中国", "贵州省", "贵州", '贵阳市', province_name]
     for level in range(MAX_LEVEL):
         print('\n================================== Running level ', level, ' ==================================\n')
         iteration(folder, rootNode, used_word)
@@ -74,8 +74,8 @@ def main(data_path, rootNode, province_name):
 
 if __name__ == '__main__':
 
-    province_name = "贵阳"
-    province_id = "11239"
+    province_name = "北京"
+    province_id = "10065"
 
     data_path = ".\\data"
     rootNode = province_id + "_0"

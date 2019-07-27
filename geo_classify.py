@@ -84,7 +84,7 @@ def get_classify(user_cut, used_word, province_id):
         else:
             non_geo_noun.append(item[0])
 
-    return geo_noun[:10], non_geo_noun[:10]
+    return geo_noun[:20], non_geo_noun[:20]
 
 
 if __name__ == '__main__':
