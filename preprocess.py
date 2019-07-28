@@ -268,8 +268,8 @@ def part_of_speech(user_cut, stopwords, dataset):
         Flag_geo = ['LOC', 'ORG']
 
     elif dataset == "zhihu":
-        Flag = ['an', 'g']
-        Flag_geo = ['n', 'nr', 'ns', 'nt', 'nz', 'nw', 'LOC', 'ORG']
+        Flag = ['an', 'g', 'n']
+        Flag_geo = ['nr', 'ns', 'nt', 'nz', 'nw', 'LOC', 'ORG']
 
     # 准备百度接口认证
     token_pool = get_baidu_nlp_token()
@@ -282,8 +282,8 @@ def part_of_speech(user_cut, stopwords, dataset):
 
 if __name__ == '__main__':
 
-    dataset = "zhihu"
-    dataset_id = "ZhongGuoJinDaiShi"
+    dataset = "mafengwo"
+    dataset_id = "GuiYang"
 
     # 设置结果数据保存文件夹
     data_path = init(dataset)

@@ -5,6 +5,7 @@
 @Description: 
 """
 
+import os
 import urllib3
 from BaiduApi import Baidu_respond
 from GaodeApi import Gaode_respond
@@ -61,9 +62,10 @@ def geo_verify(noun):
     return True
 
 
-def get_set_geo(province_id):
+def get_set_geo(dataset, dataset_id):
     set_geo = set()
-    with open("data\\" + province_id + "_geo_noun.txt", 'r') as file_to_read:
+    file_path = os.path.join("data/", dataset, dataset_id + "_geo_noun.txt")
+    with open(file_path , 'r') as file_to_read:
         item = file_to_read.readline()
         while item:
             set_geo.add(item[:-1])
@@ -71,8 +73,8 @@ def get_set_geo(province_id):
     return set_geo
 
 
-def get_classify(user_cut, used_word, province_id):
-    set_geo = get_set_geo(province_id)
+def get_classify(user_cut, used_word, dataset, dataset_id):
+    set_geo = get_set_geo(dataset, dataset_id)
     geo_noun = []
     non_geo_noun = []
     for item in user_cut:

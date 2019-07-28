@@ -198,7 +198,7 @@ def find_seed(user_cut, geo_noun):
     return geo_left
 
 
-def corpus_seed(data_path, fileNode, used_word, rootName):
+def corpus_seed(data_path, fileNode, used_word, rootName, dataset):
     print('\n==========================\n Running Node  ', fileNode, '\n==========================')
 
     user_cut = generate_sentences(data_path, fileNode)
@@ -207,7 +207,7 @@ def corpus_seed(data_path, fileNode, used_word, rootName):
     sort_Word = CountWord(user_cut)
     print("景点名词：", sort_Word[:10])
 
-    geo_noun, non_geo_noun = get_classify(sort_Word, used_word, rootName[:-2])
+    geo_noun, non_geo_noun = get_classify(sort_Word, used_word, dataset, rootName[:-2])
     print("地理名词集合 {}".format(geo_noun))
     print("特征名词集合 {}".format(non_geo_noun))
 
