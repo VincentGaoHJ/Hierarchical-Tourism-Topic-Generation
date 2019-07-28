@@ -191,10 +191,12 @@ def multi_thread(user_cut, token_pool, Flag, Flag_geo):
     ip_list = getProxy(7)
     for single in user_cut:
         i += 1
-        batch_string = '分割'.join([batch_string, single])
-        if len(batch_string) >= 10000:
+        batch_string_after = '分割'.join([batch_string, single])
+        if len(batch_string_after) <= 10000:
+            batch_string = batch_string_after
+        else:
             batch_string_list.append(batch_string)
-            batch_string = ""
+            batch_string = single
             if len(batch_string_list) == thread_num:
                 print("[仅仅留下名词，构建地理与非地理名词词表] {}/{}".format(i, num))
                 try:
@@ -216,6 +218,7 @@ def multi_thread(user_cut, token_pool, Flag, Flag_geo):
                         continue
 
                     if not data_fenci.__contains__("items"):
+                        print(data_fenci)
                         print("[解析词表] 第 {} 个线程抓取无结果".format(k))
                         ip_list = getProxy(7)
                         continue
@@ -280,7 +283,7 @@ def part_of_speech(user_cut, stopwords, dataset):
 if __name__ == '__main__':
 
     dataset = "zhihu"
-    dataset_id = "nlp"
+    dataset_id = "ZhongGuoJinDaiShi"
 
     # 设置结果数据保存文件夹
     data_path = init(dataset)
