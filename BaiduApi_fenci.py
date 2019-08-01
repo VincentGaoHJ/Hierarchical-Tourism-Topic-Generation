@@ -77,7 +77,7 @@ def get_baidu_nlp_token():
     return access_token_pool
 
 
-def Baidu_fenci_respond(data, access_token, ip = ""):
+def Baidu_fenci_respond(data, access_token, ip=""):
     """
     向用户提供分词、词性标注、专名识别三大功能；能够识别出文本串中的基本词汇（分词）
     对这些词汇进行重组、标注组合后词汇的词性，并进一步识别出命名实体。
@@ -99,7 +99,7 @@ def Baidu_fenci_respond(data, access_token, ip = ""):
         req = request.Request(post_url, paras, headers=header)
         proxy_handler = request.ProxyHandler(ip)
         opener = request.build_opener(proxy_handler)
-        rsp = opener.open(req)
+        rsp = opener.open(req, timeout=10)
         rspdata = json.loads(rsp.read().decode("gbk"))
         # print(rspdata)
         # rspdata = json.loads(rsp.read().decode("utf8"))

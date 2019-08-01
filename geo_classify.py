@@ -65,7 +65,7 @@ def geo_verify(noun):
 def get_set_geo(dataset, dataset_id):
     set_geo = set()
     file_path = os.path.join("data/", dataset, dataset_id + "_geo_noun.txt")
-    with open(file_path , 'r') as file_to_read:
+    with open(file_path, 'r') as file_to_read:
         item = file_to_read.readline()
         while item:
             set_geo.add(item[:-1])

@@ -230,7 +230,8 @@ def multi_thread(user_cut, token_pool, Flag, Flag_geo):
                     seg_save = []
                     for item in data_fenci["items"]:
                         ci = item["item"]
-                        if len(ci) <= 1 or ci in stopwords or is_uchar(ci) is False:
+                        # if len(ci) <= 1 or ci in stopwords or is_uchar(ci) is False:
+                        if len(ci) <= 1 or ci in stopwords:
                             continue
                         if ci == "文章":
                             user_last.append("文章")
@@ -282,8 +283,8 @@ def part_of_speech(user_cut, stopwords, dataset):
 
 if __name__ == '__main__':
 
-    dataset = "mafengwo"
-    dataset_id = "GuiYang"
+    dataset = "zhihu"
+    dataset_id = "nlp"
 
     # 设置结果数据保存文件夹
     data_path = init(dataset)
