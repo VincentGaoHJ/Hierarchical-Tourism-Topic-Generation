@@ -64,7 +64,7 @@ def main(data_path, rootNode, dataset, dataset_id):
     # used_word = ["文章", "中国", "云南", '昆明市', '昆明', dataset_id]
     # used_word = ["文章", "中国", "浙江省", "浙江", '杭州市', '杭州', dataset_id]
     # used_word = ["文章", "中国", "贵州省", "贵州", "贵阳", '贵阳市', dataset_id]
-    used_word = ["文章", "自然语言处理", "NLP","机器", dataset_id]
+    used_word = ["文章", "自然语言处理", "NLP", "机器", dataset_id]
     for level in range(MAX_LEVEL):
         print('\n================================== Running level ', level, ' ==================================\n')
         iteration(folder, rootNode, used_word, dataset)
@@ -74,8 +74,8 @@ def main(data_path, rootNode, dataset, dataset_id):
 
 
 if __name__ == '__main__':
-    dataset = "zhihu"
-    dataset_id = "nlp"
+    dataset = "tripadvisor"
+    dataset_id = "g60763"
 
     data_path = ".\\data"
     rootNode = dataset_id + "_0"

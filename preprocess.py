@@ -56,7 +56,8 @@ def multi_threading(batch_string_list, token_pool, ip_list):
     for i in nloops:
         token_num = i % 7
         print("[构造多线程] 正在使用第 {} 个 token".format(token_num))
-        t = MyThread(Baidu_fenci_respond, (batch_string_list[i], token_pool[token_num], ip_list[token_num]), Baidu_fenci_respond.__name__)
+        t = MyThread(Baidu_fenci_respond, (batch_string_list[i], token_pool[token_num], ip_list[token_num]),
+                     Baidu_fenci_respond.__name__)
         threads.append(t)
 
     for i in nloops:  # start threads 此处并不会执行线程，而是将任务分发到每个线程，同步线程。等同步完成后再开始执行start方法
@@ -112,6 +113,26 @@ def readfile(dataset_id, dataset):
         with open('./raw_data/zhihu/stop_words.txt', encoding='utf-8-sig') as f1:
             stopwords = f1.read().split()
 
+    elif dataset == "tripadvisor":
+        with open('./raw_data/tripadvisor/' + dataset_id + '_comment_all.csv', 'r', encoding='utf-8-sig') as csvfile:
+            reader = csv.reader(csvfile)
+            for line in reader:
+                # question = line[2]
+                comment = line[4]
+                # print(comment)
+                comment_list = re.split(r'[.!。|\n]', comment)  # 按句子划分
+                comment_list = [i for i in comment_list if i != ""]  # 删除空值
+                # print(comment_list)
+                for sentence in comment_list:
+                    comment_sentence.append(sentence)
+
+                # 作为文章与文章之间的分隔符
+                comment_sentence.append("文章")
+
+        # 加载停用词
+        with open('./raw_data/zhihu/stop_words.txt', encoding='utf-8-sig') as f1:
+            stopwords = f1.read().split()
+
     return comment_sentence, stopwords
 
 
@@ -156,8 +177,8 @@ def single_thread(user_cut, token_pool, Flag, Flag_geo):
             seg_save = []
             for item in data_fenci["items"]:
                 ci = item["item"]
-                if len(ci) <= 1 or ci in stopwords or is_uchar(ci) is False:
-                    continue
+                # if len(ci) <= 1 or ci in stopwords or is_uchar(ci) is False:
+                #     continue
                 if ci == "文章":
                     user_last.append("文章")
                     continue
@@ -226,7 +247,6 @@ def multi_thread(user_cut, token_pool, Flag, Flag_geo):
                     # print(data_fenci["text"])
                     print("[解析词表] 正在解析第 {} 个线程抓取的结果".format(k))
 
-
                     seg_save = []
                     for item in data_fenci["items"]:
                         ci = item["item"]
@@ -272,6 +292,10 @@ def part_of_speech(user_cut, stopwords, dataset):
         Flag = ['an', 'g', 'n']
         Flag_geo = ['nr', 'ns', 'nt', 'nz', 'nw', 'LOC', 'ORG']
 
+    elif dataset == "tripadvisor":
+        Flag = ['an', 'g', 'n', 'nr', 'ns', 'nt', 'nz']
+        Flag_geo = ['LOC', 'ORG']
+
     # 准备百度接口认证
     token_pool = get_baidu_nlp_token()
 
@@ -283,15 +307,15 @@ def part_of_speech(user_cut, stopwords, dataset):
 
 if __name__ == '__main__':
 
-    dataset = "zhihu"
-    dataset_id = "nlp"
+    dataset = "tripadvisor"
+    dataset_id = "g60763"
 
     # 设置结果数据保存文件夹
     data_path = init(dataset)
 
     # 读取初始文件以及停用词词表
     comment_sentence, stopwords = readfile(dataset_id, dataset)
-    print(comment_sentence[:1])
+    print(comment_sentence[:5])
 
     # 按照词性进行筛选，并且构建词表
     user_last, geo, non_geo = part_of_speech(comment_sentence, stopwords, dataset)
