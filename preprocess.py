@@ -83,7 +83,7 @@ def readfile(dataset_id, dataset):
             reader = csv.reader(csvfile)
             for line in reader:
                 comment = line[2]
-                comment_list = re.split("。|\n", comment)  # 按句子划分
+                comment_list = re.split(r'[.!。|\n]', comment)  # 按句子划分
                 comment_list = [i for i in comment_list if i != ""]  # 删除空值
                 for sentence in comment_list:
                     comment_sentence.append(sentence)
@@ -101,7 +101,7 @@ def readfile(dataset_id, dataset):
             for line in reader:
                 # question = line[2]
                 comment = line[3]
-                comment_list = re.split("。|\n", comment)  # 按句子划分
+                comment_list = re.split(r'[.!。|\n]', comment)  # 按句子划分
                 comment_list = [i for i in comment_list if i != ""]  # 删除空值
                 for sentence in comment_list:
                     comment_sentence.append(sentence)
@@ -250,8 +250,8 @@ def multi_thread(user_cut, token_pool, Flag, Flag_geo):
                     seg_save = []
                     for item in data_fenci["items"]:
                         ci = item["item"]
-                        # if len(ci) <= 1 or ci in stopwords or is_uchar(ci) is False:
-                        if len(ci) <= 1 or ci in stopwords:
+                        if len(ci) <= 1 or ci in stopwords or is_uchar(ci) is False:
+                        # if len(ci) <= 1 or ci in stopwords:
                             continue
                         if ci == "文章":
                             user_last.append("文章")
