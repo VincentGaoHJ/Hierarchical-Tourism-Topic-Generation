@@ -133,6 +133,26 @@ def readfile(dataset_id, dataset):
         with open('./raw_data/zhihu/stop_words.txt', encoding='utf-8-sig') as f1:
             stopwords = f1.read().split()
 
+    elif dataset == "ugc":
+        with open('./raw_data/ugc/' + dataset_id + '.csv', 'r', encoding='utf-8-sig') as csvfile:
+            reader = csv.reader(csvfile)
+            for line in reader:
+                comment = line[9]
+                comment_list = re.split(r'[!。|\n]', comment)  # 按句子划分
+                comment_list = [i for i in comment_list if i != ""]  # 删除空值
+                for sentence in comment_list:
+                    comment_sentence.append(sentence)
+
+                # 作为文章与文章之间的分隔符
+                comment_sentence.append("文章")
+
+        # 加载停用词
+        with open('./raw_data/ugc/stop_words.txt', encoding='utf-8-sig') as f1:
+            stopwords = f1.read().split()
+
+    else:
+        raise Exception("The given dataset is not exist at all!")
+
     return comment_sentence, stopwords
 
 
@@ -176,6 +196,7 @@ def single_thread(user_cut, token_pool, Flag, Flag_geo):
 
             seg_save = []
             for item in data_fenci["items"]:
+                print(item["item"], item["pos"], item["ne"])
                 ci = item["item"]
                 # if len(ci) <= 1 or ci in stopwords or is_uchar(ci) is False:
                 #     continue
@@ -296,6 +317,12 @@ def part_of_speech(user_cut, stopwords, dataset):
         Flag = ['an', 'g', 'n', 'nr', 'ns', 'nt', 'nz']
         Flag_geo = ['LOC', 'ORG']
 
+    elif dataset == "ugc":
+        Flag = ['an', 'g', 'n']
+        Flag_geo = ["nz", "nr", "ns", "nt", "nw", 'LOC', 'ORG']
+    else:
+        raise Exception("The given dataset is wrong, please check again.")
+
     # 准备百度接口认证
     token_pool = get_baidu_nlp_token()
 
@@ -307,8 +334,8 @@ def part_of_speech(user_cut, stopwords, dataset):
 
 if __name__ == '__main__':
 
-    dataset = "tripadvisor"
-    dataset_id = "g60763"
+    dataset = "ugc"
+    dataset_id = "wanmeiriji_14313"
 
     # 设置结果数据保存文件夹
     data_path = init(dataset)
